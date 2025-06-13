@@ -1,5 +1,5 @@
 {
-  "name": "@joy-of-lifting/react-use-slots",
+  "name": "@the-joy-of-lifting/react-use-slots",
   "version": "1.0.0",
   "description": "A React hook for managing slot-based layout composition",
   "main": "dist/index.js",
