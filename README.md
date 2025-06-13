@@ -1,11 +1,10 @@
-📄 README.md
-md
-Copy
-Edit
-# @nickbaker/use-slots
+
+
+# @the-joy-of-lifting/use-slots
 
 > A minimal React hook for extracting "slots" from JSX children — inspired by the Web Components and Vue component model.
 
+[![npm](https://img.shields.io/npm/v/@the-joy-of-lifting/react-use-slots)](https://www.npmjs.com/package/@the-joy-of-lifting/react-use-slots)
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
@@ -14,7 +13,7 @@ Edit
 ## 📦 Install
 
 ```bash
-npm install @nickbaker/use-slots
+npm install @the-joy-of-lifting/use-slots
 ```
 ## 🎯 What Are Slots?
 Slots are a pattern for named child content injection.
@@ -93,7 +92,7 @@ unSlotted: All children without a slot prop (e.g., content, body)
 
 ## 🧪 Example
 ```tsx
-import { useSlots } from "@nickbaker/use-slots";
+import { useSlots } from "@the-joy-of-lifting/use-slots";
 
 export function Card({ children }: { children: React.ReactNode }) {
   const { slotted, unSlotted } = useSlots<"header" | "footer">(children);
