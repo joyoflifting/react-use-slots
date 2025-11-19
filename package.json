@@ -32,7 +32,9 @@
     "build": "tsc",
     "prepare": "npm run build",
     "test": "jest",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "test:package": "npm run build && node scripts/test-package.js",
+    "prepublishOnly": "npm run test:package"
   },
   "devDependencies": {
     "@testing-library/react": "^16.3.0",
