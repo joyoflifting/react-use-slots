@@ -2,9 +2,17 @@
   "name": "@the-joy-of-lifting/react-use-slots",
   "version": "2.0.3",
   "description": "A React hook for managing slot-based layout composition",
+  "type": "module",
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
   "keywords": [
     "react",
     "hook",
