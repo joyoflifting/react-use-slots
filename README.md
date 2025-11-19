@@ -1,132 +1,165 @@
+# useSlots
 
+A lightweight React hook for slot-based component composition, inspired by Web Components and Vue's slot system.
 
-# @the-joy-of-lifting/use-slots
-
-> A minimal React hook for extracting "slots" from JSX children — inspired by the Web Components and Vue component model.
-
-[![npm](https://img.shields.io/npm/v/@the-joy-of-lifting/react-use-slots)](https://www.npmjs.com/package/@the-joy-of-lifting/react-use-slots)
-
+[![npm version](https://img.shields.io/npm/v/@the-joy-of-lifting/react-use-slots)](https://www.npmjs.com/package/@the-joy-of-lifting/react-use-slots)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
----
-
-## 📦 Install
+## Installation
 
 ```bash
-npm install @the-joy-of-lifting/use-slots
+npm install @the-joy-of-lifting/react-use-slots
 ```
-## 🎯 What Are Slots?
-Slots are a pattern for named child content injection.
 
-In frameworks like Vue and the Web Components spec, <slot name="header" /> allows you to pass multiple child blocks into a component and address them by name. React doesn’t have a built-in mechanism for this — but it can be emulated using JSX and props.children.
+## Why useSlots?
 
-This hook gives you a clean, performant way to group children by a slot prop.
-
-## 💡 Why Use Slots in React?
-Traditionally in React, you'd pass content like this:
+React's `children` prop is powerful but limited to a single content area. When building flexible layout components, you often need to pass multiple distinct content blocks. The traditional approach uses separate props:
 
 ```tsx
-<MyCard
-  header={<Header />}
-  footer={<Footer />}
+<Card
+  header={<CardHeader />}
+  footer={<CardFooter />}
 >
-  <MainContent />
-</MyCard>
+  <CardBody />
+</Card>
 ```
-This works, but becomes awkward when:
 
-- You have many children or optional layout regions
-- You want declarative usage closer to HTML structure
-- You need dynamic composition of content inside a component
-
-With useSlots, you can write:
+This becomes verbose and cumbersome with multiple content areas. **useSlots** enables a more declarative, HTML-like syntax:
 
 ```tsx
-<MyCard>
-  <Header slot="header" />
-  <MainContent />
-  <Footer slot="footer" />
-</MyCard>
+<Card>
+  <CardHeader slot="header" />
+  <CardBody />
+  <CardFooter slot="footer" />
+</Card>
 ```
-Inside MyCard, you extract these regions:
+
+## Quick Start
 
 ```tsx
-const { slotted, unSlotted } = useSlots(children);
-```
-And render them like:
+import { useSlots } from '@the-joy-of-lifting/react-use-slots';
 
-```tsx
-<div className="card">
-  {slotted.header}
-  <div className="content">{unSlotted}</div>
-  {slotted.footer}
-</div>
-```
-## ✅ Benefits Over Passing Components as Props
-Approach	Pros	Cons
-Props as elements	Explicit, typed	Verbose, not declarative
-children only	Simple for 1 slot	Not scalable to multiple areas
-Slots (this)	Declarative, flexible, extensible	Needs a hook / convention
-
-## 🧠 Philosophy
-The goal is to allow a more semantic, declarative, and modular component structure without breaking idiomatic React. useSlots keeps your API lean and expressive — especially when building reusable layout primitives or design system components.
-
-This aligns with progressive disclosure and slot-based mental models from HTML/Shadow DOM and design systems like Web Components and Vue.
-
-🧩 API
-```ts
-function useSlots<T extends string = string>(
-  children: ReactNode
-): {
-  slotted: Record<T, ReactElement>;
-  unSlotted: ReactElement[];
-}
-```
-Parameters:
-children: JSX children, often from props.children
-
-Returns:
-slotted: A map of all children with a slot="..." prop
-
-unSlotted: All children without a slot prop (e.g., content, body)
-
-## 🧪 Example
-```tsx
-import { useSlots } from "@the-joy-of-lifting/use-slots";
-
-export function Card({ children }: { children: React.ReactNode }) {
-  const { slotted, unSlotted } = useSlots<"header" | "footer">(children);
+function Card({ children }) {
+  const { slotted, unSlotted } = useSlots(children);
 
   return (
     <div className="card">
-      {slotted.header}
+      <header>{slotted.header}</header>
       <main>{unSlotted}</main>
-      {slotted.footer}
+      <footer>{slotted.footer}</footer>
+    </div>
+  );
+}
+
+// Usage
+<Card>
+  <h2 slot="header">Dashboard</h2>
+  <p>Main content goes here</p>
+  <button slot="footer">Save</button>
+</Card>
+```
+
+## API
+
+```typescript
+function useSlots(children: ReactNode): {
+  slotted: Record<string, ReactElement>;
+  unSlotted: ReactNode[];
+}
+```
+
+### Returns
+
+- **`slotted`**: Object mapping slot names to their content. Access named slots via `slotted.header`, `slotted.footer`, etc.
+- **`unSlotted`**: Array of children without a `slot` prop, typically used for main content.
+
+## TypeScript Support
+
+Type-safe slot names with generics:
+
+```tsx
+function Modal({ children }: { children: React.ReactNode }) {
+  const { slotted, unSlotted } = useSlots<'title' | 'actions'>(children);
+
+  return (
+    <div className="modal">
+      <div className="modal-header">{slotted.title}</div>
+      <div className="modal-body">{unSlotted}</div>
+      <div className="modal-footer">{slotted.actions}</div>
     </div>
   );
 }
 ```
-Usage:
+
+## Examples
+
+### Dashboard Layout
 
 ```tsx
-<Card>
-  <h2 slot="header">Welcome!</h2>
-  <p>This is the main content</p>
-  <footer slot="footer">© 2025</footer>
-</Card>
+function Dashboard({ children }) {
+  const { slotted, unSlotted } = useSlots(children);
+
+  return (
+    <div className="dashboard">
+      <aside className="sidebar">{slotted.sidebar}</aside>
+      <main className="content">{unSlotted}</main>
+      {slotted.toolbar && (
+        <div className="toolbar">{slotted.toolbar}</div>
+      )}
+    </div>
+  );
+}
+
+<Dashboard>
+  <Navigation slot="sidebar" />
+  <Toolbar slot="toolbar" />
+  <Content />
+</Dashboard>
 ```
 
-## 📘 Advanced Notes
-Slot values must be strings (e.g., slot="header")
+### Dialog Component
 
-You can use TypeScript generics for allowed slot names for better DX
+```tsx
+function Dialog({ children }) {
+  const { slotted, unSlotted } = useSlots(children);
 
-useSlots is not memoized — but can be wrapped in useMemo if needed
+  return (
+    <div role="dialog">
+      {slotted.title && <h2>{slotted.title}</h2>}
+      <div className="dialog-content">{unSlotted}</div>
+      {slotted.actions && (
+        <div className="dialog-actions">{slotted.actions}</div>
+      )}
+    </div>
+  );
+}
+```
 
-You can enforce slot types via a union like: useSlots<'left' | 'right'>(...)
+## When to Use Slots
 
-## 🧑‍💻 Author
-Made with love by Nick Baker
+✅ **Good for:**
+- Layout components with multiple content areas
+- Design system primitives (cards, modals, panels)
+- Components with optional regions
+- Complex composition patterns
 
-## 📄 License
-MIT — free to use, modify, and distribute.
+❌ **Not needed for:**
+- Simple wrappers with single content area
+- Components with few props
+- Heavily controlled/data-driven components
+
+## Performance Considerations
+
+`useSlots` processes children on every render. For performance-critical components with many children, consider memoization:
+
+```tsx
+const slots = useMemo(() => useSlots(children), [children]);
+```
+
+## License
+
+MIT © [Nick Baker](https://github.com/joyoflifting)
+
+## Contributing
+
+Issues and pull requests welcome on [GitHub](https://github.com/joyoflifting/react-use-slots).

@@ -15,7 +15,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/joyoflifting/react-use-slots"
+    "url": "git+https://github.com/joyoflifting/react-use-slots.git"
   },
   "peerDependencies": {
     "react": "^18.2.0"

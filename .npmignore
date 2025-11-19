@@ -1,4 +1,7 @@
-# src
+src
 *.test.ts
+*.test.tsx
 tsconfig.json
 .gitignore
+coverage
+node_modules

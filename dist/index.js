@@ -1,1 +1,1 @@
-export * from "./src/useSlots.js";
+export * from './useSlots';
